@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遗传身高计算器 - 科学预测孩子的成长潜力</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2c7bb6 0%, #4a90e2 100%);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #2c7bb6;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .intro-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .intro-box p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .calculator-container {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2c7bb6;
+            box-shadow: 0 0 0 3px rgba(44, 123, 182, 0.1);
+        }
+        
+        .unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #2c7bb6 0%, #4a90e2 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0 25px;
+        }
+        
+        .btn-calculate:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 123, 182, 0.3);
+        }
+        
+        .result-container {
+            background: #e6f7ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            color: #2c7bb6;
+            margin-bottom: 15px;
+        }
+        
+        .predicted-height {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .height-range {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .explanation {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .info-section {
+            margin-top: 40px;
+        }
+        
+        .info-box {
+            background: #f8f9fc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            color: #2c7bb6;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .factors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .factor {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .factor i {
+            font-size: 2rem;
+            color: #2c7bb6;
+            margin-bottom: 15px;
+        }
+        
+        .formula-section {
+            background: linear-gradient(135deg, #2c7bb6 0%, #4a90e2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .formula-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+        
+        .formula-content {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        
+        .formula-example {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        @media (max-width: 600px) {
+            .input-row {
+                flex-direction: column;
+            }
+            
+            .input-column {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .predicted-height {
+                font-size: 2rem;
+            }
+            
+            .formula-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-child"></i>
+        </div>
+        <h1>遗传身高计算器</h1>
+        <p class="subtitle">科学预测孩子的成长潜力</p>
+    </div>
+    
+    <div class="intro-box">
+        <p>孩子的身高主要受遗传因素影响，约占60-80%。通过父母身高，我们可以科学预测孩子的遗传身高范围。</p>
+        <p>本计算器基于国际公认的遗传身高计算公式，帮助您了解孩子的成长潜力范围。</p>
+    </div>
+    
+    <div class="calculator-container">
+        <h2><i class="fas fa-calculator"></i> 计算孩子的遗传身高</h2>
+        <p style="margin: 15px 0 25px; color: #7f8c8d;">根据父母身高预测孩子的遗传身高范围</p>
+        
+        <div class="input-group">
+            <div class="input-row">
+                <div class="input-column">
+                    <label for="father-height"><i class="fas fa-male"></i> 父亲身高 (cm)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="father-height" placeholder="请输入父亲身高">
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+                
+                <div class="input-column">
+                    <label for="mother-height"><i class="fas fa-female"></i> 母亲身高 (cm)</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="mother-height" placeholder="请输入母亲身高">
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-row">
+                <div class="input-column">
+                    <label for="child-gender"><i class="fas fa-venus-mars"></i> 孩子性别</label>
+                    <select id="child-gender">
+                        <option value="boy">男孩</option>
+                        <option value="girl">女孩</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn-calculate" onclick="calculateHeight()">
+                <i class="fas fa-calculator"></i> 计算遗传身高
+            </button>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <h3 class="result-title">预测结果</h3>
+            <p>根据您提供的数据：</p>
+            <div class="predicted-height" id="predicted-height">-- cm</div>
+            <p class="height-range" id="height-range">范围：-- cm 至 -- cm</p>
+            
+            <div class="explanation">
+                <p><strong>计算说明：</strong></p>
+                <p id="formula-display">男孩遗传身高 = (父亲身高 + 母亲身高 + 13) ÷ 2</p>
+                <p>±5cm范围表示遗传潜力区间，实际身高受营养、睡眠、运动等因素影响。</p>
+            </div>
+        </div>
+        
+        <div class="formula-section">
+            <h3 class="formula-title">遗传身高计算公式</h3>
+            <div class="formula-content">
+                <p>男孩遗传身高 = (父亲身高 + 母亲身高 + 13cm) ÷ 2</p>
+                <p>女孩遗传身高 = (父亲身高 + 母亲身高 - 13cm) ÷ 2</p>
+            </div>
+            <p>计算结果有±5cm的浮动范围，代表遗传潜力区间</p>
+            
+            <div class="formula-example">
+                <p><strong>示例：</strong></p>
+                <p>父亲身高：175cm，母亲身高：162cm</p>
+                <p>儿子身高预测：(175 + 162 + 13) ÷ 2 = 175cm（范围170-180cm）</p>
+                <p>女儿身高预测：(175 + 162 - 13) ÷ 2 = 162cm（范围157-167cm）</p>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-box">
+                <h3><i class="fas fa-lightbulb"></i> 关于遗传身高的科学知识</h3>
+                <p>遗传身高计算公式基于人类遗传学研究，反映了父母身高对孩子身高的影响程度。研究表明：</p>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li>遗传因素占身高影响约60-80%</li>
+                    <li>后天因素（营养、运动等）可影响最终身高±5cm</li>
+                    <li>男孩通常在父亲身高基础上±8.5cm</li>
+                    <li>女孩通常在母亲身高基础上±8.5cm</li>
+                </ul>
+            </div>
+            
+            <div class="info-box">
+                <h3><i class="fas fa-chart-line"></i> 影响身高的后天因素</h3>
+                <p>除了遗传因素，这些后天因素对孩子的最终身高至关重要：</p>
+                
+                <div class="factors">
+                    <div class="factor">
+                        <i class="fas fa-apple-alt"></i>
+                        <h4>营养均衡</h4>
+                        <p>蛋白质、钙、维生素D等关键营养素</p>
+                    </div>
+                    
+                    <div class="factor">
+                        <i class="fas fa-bed"></i>
+                        <h4>充足睡眠</h4>
+                        <p>生长激素主要在深度睡眠时分泌</p>
+                    </div>
+                    
+                    <div class="factor">
+                        <i class="fas fa-running"></i>
+                        <h4>合理运动</h4>
+                        <p>跳跃类运动刺激骨骼生长</p>
+                    </div>
+                    
+                    <div class="factor">
+                        <i class="fas fa-heart"></i>
+                        <h4>情绪健康</h4>
+                        <p>压力过大会影响生长激素分泌</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateHeight() {
+            // 获取输入值
+            const fatherHeight = parseFloat(document.getElementById('father-height').value);
+            const motherHeight = parseFloat(document.getElementById('mother-height').value);
+            const childGender = document.getElementById('child-gender').value;
+            
+            // 验证输入
+            if (isNaN(fatherHeight) || fatherHeight < 100 || fatherHeight > 230) {
+                alert("请输入有效的父亲身高（100-230cm之间）");
+                return;
+            }
+            
+            if (isNaN(motherHeight) || motherHeight < 100 || motherHeight > 230) {
+                alert("请输入有效的母亲身高（100-230cm之间）");
+                return;
+            }
+            
+            // 计算遗传身高
+            let baseHeight, formula;
+            
+            if (childGender === 'boy') {
+                baseHeight = (fatherHeight + motherHeight + 13) / 2;
+                formula = `男孩遗传身高 = (父亲身高 ${fatherHeight} + 母亲身高 ${motherHeight} + 13) ÷ 2`;
+            } else {
+                baseHeight = (fatherHeight + motherHeight - 13) / 2;
+                formula = `女孩遗传身高 = (父亲身高 ${fatherHeight} + 母亲身高 ${motherHeight} - 13) ÷ 2`;
+            }
+            
+            // 计算范围（±5cm）
+            const minHeight = (baseHeight - 5).toFixed(1);
+            const maxHeight = (baseHeight + 5).toFixed(1);
+            
+            // 显示结果
+            document.getElementById('predicted-height').textContent = baseHeight.toFixed(1) + ' cm';
+            document.getElementById('height-range').textContent = `范围：${minHeight} cm 至 ${maxHeight} cm`;
+            document.getElementById('formula-display').textContent = formula;
+            
+            // 显示结果容器
+            document.getElementById('result-container').style.display = 'block';
+            
+            // 滚动到结果位置
+            document.getElementById('result-container').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // 初始示例数据
+        document.getElementById('father-height').value = '175';
+        document.getElementById('mother-height').value = '162';
+    </script>
+</body>
+</html>
